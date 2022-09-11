@@ -84,13 +84,14 @@ end
 create_game_board(game1)
 display_board(game1)
 
-puts "What's your name, Player 1?"
-name = gets.chomp
-player1 = Player.new(name)
+def get_player(player)
+    puts "what's your name, #{player}?"
+    name = gets.chomp
+    return Player.new(name)
+end
 
-puts "What's your name, Player 2?"
-name = gets.chomp
-player2 = Player.new(name)
+player1 = get_player("Player 1")
+player2 = get_player("player 2")
 
 player1.make_play(game1,1, player1.piece)
 
