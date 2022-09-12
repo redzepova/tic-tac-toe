@@ -1,45 +1,89 @@
+###Set up players###
+
 class Player
     @@total_score = 0
-    attr_accessor :name, :score, :played, :win, :piece, :selection
+    attr_accessor :name, :current, :piece, :selection
 
-    def initialize(n)
-        @name = n
-        @score = 0
-        self.played = false
-        self.win = false
+    def initialize(string)
+        puts "What's your name, #{string}?"
+        @name = gets.chomp
+        @current = false
         @selection = []
         puts "Select your game piece, #{@name}"
         @piece = gets.chomp
         puts "OK, #{@name}, your game piece is #{@piece}"
     end
 
-    def make_play(game, selection, player_piece)
+    def add_selection(number)
+        @selection << number
+    end
+
+    def make_play(game)
+        puts "Make your move, #{@name} - pick a square"
+        selection = gets.chomp.to_i
         if game.squares[selection-1].played == true
             puts "That square has already been played"
         else
-            game.squares[selection-1].display = "[  #{player_piece}  ]"
-            game.squares[selection-1].played = false
+            game.squares[selection-1].display = "[  #{@piece}  ]"
+            game.squares[selection-1].played = true
+            add_selection(selection)
+            @current = false
+            display_board(game)
+            puts "#{@name}'s moves: #{@selection}"
+            game.determine_winner(@selection)
         end
-    end 
-
+    end
 end
 
+class Player1 < Player
+    def initialize(n)
+        super
+        @current = true
+    end
+end
+
+class Player2 < Player
+end
+
+####Make Game board####
+
 class GameBoard
-    attr_accessor :name, :squares
+    attr_accessor :name, :squares, :winner, :winning_moves
+
+    
 
     def initialize(n)
         self.name = name
         @squares = []
+        @winner = false
+        @winning_moves = [[1,2,3],[4,5,6], [7,8,9], [1,4,7],[2,5,8],[3,6,9], [1,5,9], [3,5,7]]
     end
 
     def add_square(square)
         @squares << square
         square.name = self
     end
+
+    def determine_winner(array)
+        if array.length > 2
+            x = 0
+            while x < array.length - 2
+                new_array = array.sort.slice(x, 3)
+                @winning_moves.each do |element|
+                    if new_array == element
+                        @winner = true
+                        puts "Tic Tac Toe - Three-in-a-Row!"
+                    end
+                end
+                x += 1
+            end
+        end
+    end
+                
 end
 
 class Squares
-    attr_accessor :name, :game_board, :display, :played
+    attr_accessor :name, :display, :played
 
     @@all = []
 
@@ -51,7 +95,7 @@ class Squares
     end
 end
 
-game1 = GameBoard.new("Game 1")
+### Set up game ###
 
 def create_game_board(game)
     x = 1
@@ -81,29 +125,30 @@ def display_board(game)
     end
 end
 
+def play_game(game, player1, player2)
+    x = 0
+    while game.winner == false && x < 10
+        if player1.current == true
+            player1.make_play(game)
+            player1.current = false
+        else
+            player2.make_play(game)
+            player1.current = true
+        end
+    end
+end
+
+####Game Play###
+
+game1 = GameBoard.new("Game 1")
+
+
 create_game_board(game1)
 display_board(game1)
 
-def get_player(player)
-    puts "what's your name, #{player}?"
-    name = gets.chomp
-    return Player.new(name)
-end
-
-player1 = get_player("Player 1")
-player2 = get_player("player 2")
-
-player1.make_play(game1,1, player1.piece)
-
-display_board(game1)
+player1 = Player1.new("Player 1")
+player2 = Player2.new("Player 2")
 
 
 
-winning_selection = [[1,2,3],[4,5,6], [7,8,9], [1,4,7],[2,5,8],[3,6,9], [1,5,9], [3,5,7]]
-
-
-
-
-
-
-
+play_game(game1, player1, player2)
