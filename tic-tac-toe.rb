@@ -127,7 +127,7 @@ end
 
 def play_game(game, player1, player2)
     x = 0
-    while game.winner == false && x < 10
+    while game.winner == false && x < 9
         if player1.current == true
             player1.make_play(game)
             player1.current = false
@@ -135,20 +135,45 @@ def play_game(game, player1, player2)
             player2.make_play(game)
             player1.current = true
         end
+    x += 1
     end
 end
 
 ####Game Play###
 
-game1 = GameBoard.new("Game 1")
-
-
-create_game_board(game1)
-display_board(game1)
+puts "TIC - TAC - TOE"
+puts "Let's play!"
 
 player1 = Player1.new("Player 1")
 player2 = Player2.new("Player 2")
 
+new_game = "Y"
+
+def game_setup(player1, player2, game_num, game_name)
+    game_num = GameBoard.new(game_name)
+    create_game_board(game_num)
+    display_board(game_num)
+    play_game(game_num, player1, player2)
+end
+
+while new_game == "Y"
+    x = 1
+    game_name = "Game #{x}"
+    game_num = "game#{x}"
+    game_setup(player1, player2, game_num, game_name)
+    puts "Play again? Y/N"
+    new_game = gets.chomp.upcase
+    player1.selection = []
+    player2.selection = []
+    x += 1
+end
 
 
-play_game(game1, player1, player2)
+#game1 = GameBoard.new("Game 1")
+
+#create_game_board(game1)#
+#display_board(game1)
+
+
+
+#play_game(game1, player1, player2)
