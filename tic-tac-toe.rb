@@ -2,7 +2,7 @@
 
 class Player
     @@total_score = 0
-    attr_accessor :name, :current, :piece, :selection
+    attr_accessor :name, :current, :piece, :selection, :score
 
     def initialize(string)
         puts "What's your name, #{string}?"
@@ -12,6 +12,7 @@ class Player
         puts "Select your game piece, #{@name}"
         @piece = gets.chomp
         puts "OK, #{@name}, your game piece is #{@piece}"
+        @score = 0
     end
 
     def add_selection(number)
@@ -29,8 +30,10 @@ class Player
             add_selection(selection)
             @current = false
             display_board(game)
-            puts "#{@name}'s moves: #{@selection}"
             game.determine_winner(@selection)
+            if game.winner == true
+                @score += 1
+            end
         end
     end
 end
@@ -137,6 +140,9 @@ def play_game(game, player1, player2)
         end
     x += 1
     end
+    if game.winner == false && x == 9
+        puts "Tic-tac-TIE"
+    end
 end
 
 ####Game Play###
@@ -150,6 +156,8 @@ player2 = Player2.new("Player 2")
 new_game = "Y"
 
 def game_setup(player1, player2, game_num, game_name)
+    puts "#{player1.name}'s score: #{player1.score}"
+    puts "#{player2.name}'s score: #{player2.score}"
     game_num = GameBoard.new(game_name)
     create_game_board(game_num)
     display_board(game_num)
