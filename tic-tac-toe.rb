@@ -175,13 +175,3 @@ while new_game == "Y"
     player2.selection = []
     x += 1
 end
-
-
-#game1 = GameBoard.new("Game 1")
-
-#create_game_board(game1)#
-#display_board(game1)
-
-
-
-#play_game(game1, player1, player2)
